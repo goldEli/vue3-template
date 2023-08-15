@@ -53,9 +53,18 @@ const submit = async (event: any) => {
 
 const route = useRoute();
 const id = route.params.id;
+const htmlStr = ref(
+  `
+  <p style="color:red;">
+    123123213
+  </p>
+
+`
+);
 </script>
 <template>
   <div class="container">
+    <div v-html="htmlStr"></div>
     <div>获取的id为: {{ id }}</div>
     <v-sheet max-width="300" class="mx-auto">
       <v-form validate-on="submit lazy" @submit.prevent="submit">
@@ -63,12 +72,7 @@ const id = route.params.id;
       </v-form>
     </v-sheet>
     <div id="vditor" />
-    <v-btn
-      :loading="loading"
-      @click="submit"
-      block
-      class="mt-2"
-    >提交</v-btn>
+    <v-btn :loading="loading" @click="submit" block class="mt-2">提交</v-btn>
   </div>
 </template>
 <style scoped>
