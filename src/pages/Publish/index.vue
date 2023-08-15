@@ -30,12 +30,15 @@ const submit = async (event: any) => {
     userName: userName.value,
   };
 
+  const data = JSON.stringify({ editorValue, formData });
+
+  // api
   fetch("https://example.com/api/data", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ editorValue, formData }),
+    body: data,
   })
     .then((response) => response.json())
     .then((data) => {
@@ -57,17 +60,15 @@ const id = route.params.id;
     <v-sheet max-width="300" class="mx-auto">
       <v-form validate-on="submit lazy" @submit.prevent="submit">
         <v-text-field v-model="userName" label="User name"></v-text-field>
-
-        <v-btn
-          :loading="loading"
-          type="submit"
-          block
-          class="mt-2"
-          text="Submit"
-        ></v-btn>
       </v-form>
     </v-sheet>
     <div id="vditor" />
+    <v-btn
+      :loading="loading"
+      @click="submit"
+      block
+      class="mt-2"
+    >提交</v-btn>
   </div>
 </template>
 <style scoped>
