@@ -1,5 +1,52 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { useRoute } from "vue-router";
+import { ref, onMounted } from "vue";
+import Vditor from "vditor";
+import "vditor/dist/index.css";
+
+const vditor = ref<Vditor | null>(null);
+
+onMounted(() => {
+  vditor.value = new Vditor("vditor", {
+    after: () => {
+      // vditor.value is a instance of Vditor now and thus can be safely used here
+      vditor.value!.setValue(
+        "Vue Composition API + Vditor + TypeScript Minimal Example"
+      );
+    },
+  });
+});
+
+const loading = ref(false);
+const userName = ref("");
+
+const submit = async (event: any) => {
+  loading.value = true;
+  await event;
+  loading.value = false;
+
+  const editorValue = vditor.value!.getValue();
+  const formData = {
+    userName: userName.value,
+  };
+
+  fetch("https://example.com/api/data", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ editorValue, formData }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // 处理返回的数据
+      console.log(data);
+    })
+    .catch((error) => {
+      // 处理请求错误
+      console.error(error);
+    });
+};
 
 const route = useRoute();
 const id = route.params.id;
@@ -7,6 +54,20 @@ const id = route.params.id;
 <template>
   <div class="container">
     <div>获取的id为: {{ id }}</div>
+    <v-sheet max-width="300" class="mx-auto">
+      <v-form validate-on="submit lazy" @submit.prevent="submit">
+        <v-text-field v-model="userName" label="User name"></v-text-field>
+
+        <v-btn
+          :loading="loading"
+          type="submit"
+          block
+          class="mt-2"
+          text="Submit"
+        ></v-btn>
+      </v-form>
+    </v-sheet>
+    <div id="vditor" />
   </div>
 </template>
 <style scoped>
